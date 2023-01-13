@@ -1,0 +1,15 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "The Restaurant Search Schema",
+  "required": ["theme"],
+  "properties": {
+    "theme": {
+      "type": "string",
+      "title": "Theme of restaurants to display",
+      "default": "",
+      "enum": ["true blood", "cartoon", "rick and morty", "netflix", "house of cards", "toy story", "harry potter"]
+    }
+  }
+}
