@@ -16,6 +16,14 @@ provider:
   endpointType: REGIONAL
   apiGateway:
     metrics: true
+  environment:
+    rest_api_url:
+      Fn::Join:
+        - ""
+        - - https://
+          - !Ref ApiGatewayRestApi
+          - .execute-api.${aws:region}.amazonaws.com/${sls:stage}
+
 
   iam:
     role:
@@ -38,6 +46,7 @@ functions:
       restaurants_api: !Sub https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${sls:stage}/restaurants
       cognito_user_pool_id: !Ref CognitoUserPool
       cognito_client_id: !Ref WebCognitoUserPoolClient
+      cognito_server_client_id: !Ref ServerCognitoUserPoolClient
   get-restaurants:
     handler: functions/get-restaurants.handler
     events:
