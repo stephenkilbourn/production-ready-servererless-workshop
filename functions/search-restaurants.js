@@ -38,8 +38,8 @@ module.exports.handler = metricScope(metrics =>
     const end = Date.now()
 
     metrics.putMetric("latency", end - start, Unit.Milliseconds)
-    metrics.setProperty("RequestId", context.awsRequestId)
-    metrics.setProperty("ApiGatewayRequestId", event.requestContext.requestId)
+    metrics.setProperty("RequestId", context?.awsRequestId)
+    metrics.setProperty("ApiGatewayRequestId", event.requestContext?.requestId)
 
     return response
 });
