@@ -1,4 +1,4 @@
-# production-ready-servererless-workshop-week-1
+# production-ready-servererless-workshop
 work done as part of Yan Cui's [Production Ready Serverless Workshop](https://productionreadyserverless.com/)
 
 Week 1 work:
@@ -16,4 +16,4 @@ Optional extra work:
 - Record custom CloudWatch metrics via aws-embedded-metrics to generate with EMF (Embedded Metric Format)
 - Set Up custom Cloudwatch dashboard
 
-<img width="1738" alt="Screenshot 2023-01-13 at 7 30 07 AM" src="https://user-images.githubusercontent.com/7388976/212335705-bb6c55bc-9d86-4241-be6b-56309dbfdca4.png">
+<img width="1738" alt="Cloudwatch Dashboard with custom metrics" src="https://user-images.githubusercontent.com/7388976/212335705-bb6c55bc-9d86-4241-be6b-56309dbfdca4.png">
