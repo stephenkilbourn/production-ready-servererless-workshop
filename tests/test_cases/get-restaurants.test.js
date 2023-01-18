@@ -1,15 +1,10 @@
 const { init } = require('../steps/init')
-const given = require('../steps/given')
 
 const when = require('../steps/when')
 const chance = require('chance').Chance()
 
 
 describe('Given at least one restaurant is in the database', () => {
-  const restaurant = {
-    id: chance.guid(),
-    name: chance.string({ length: 16 })
-  }  
   beforeAll(async () => {
     await init()
   })
