@@ -1,6 +1,7 @@
 const { promisify } = require('util')
 const awscred = require('awscred')
 require('dotenv').config()
+const given = require('../steps/given')
 
 let initialized = false
 
@@ -19,6 +20,7 @@ const init = async () => {
     process.env.AWS_SESSION_TOKEN = credentials.sessionToken
   }
 
+  given.restaurants_seeded_in_dynamodb()
   console.log('AWS credential loaded')
 
   initialized = true

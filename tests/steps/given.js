@@ -1,10 +1,13 @@
 const AWS = require('aws-sdk');
 const chance  = require('chance').Chance()
+const  restaurants = require('../../restaurants')
 
-const DocumentClient = new AWS.DynamoDB.DocumentClient();
-
+const tableName = process.env.restaurants_table
+const DocumentClient = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 // needs number, special char, upper and lower case
 const random_password = () => `${chance.string({ length: 8})}B!gM0uth`;
+
+
 
 const an_authenticated_user = async () => {
   const cognito = new AWS.CognitoIdentityServiceProvider()
@@ -69,16 +72,35 @@ const an_authenticated_user = async () => {
   }
 }
 
-const restaurant_exists_in_dynamodb = async (restaurant) => {
+const restaurant_added_to_dynamodb = async (restaurant) => {
+
   await DocumentClient.put({
-    TableName: process.env.restaurants_table,
+    TableName: tableName,
     Item: restaurant
   }).promise()
-
+  console.log(`adding ${restaurant.name} to ${tableName} table`)
   return restaurant
+}
+
+const restaurants_seeded_in_dynamodb = async() => {
+
+  const seedItems = restaurants.map(x => ({
+    PutRequest: {
+      Item: x
+    }
+  }))
+
+  DocumentClient.batchWrite({
+    RequestItems: {
+      [tableName]: seedItems
+    }
+  }).promise()
+  .then(() => console.log("all done"))
+  .catch(err => console.error(err))
 }
 
 module.exports = {
   an_authenticated_user,
-  restaurant_exists_in_dynamodb
+  restaurant_added_to_dynamodb,
+  restaurants_seeded_in_dynamodb,
 }

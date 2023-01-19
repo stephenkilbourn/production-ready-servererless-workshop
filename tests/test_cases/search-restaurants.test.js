@@ -1,7 +1,7 @@
 const { init } = require('../steps/init')
+const given = require('../steps/given')
 const when = require('../steps/when')
 const teardown = require('../steps/teardown')
-const given = require('../steps/given')
 
 describe('Given an authenticated user', () => {
   beforeAll(async () => {
