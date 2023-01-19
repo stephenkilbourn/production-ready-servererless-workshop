@@ -40,6 +40,10 @@ provider:
           Resource:
             - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${sls:stage}/get-restaurants/config
             - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${sls:stage}/search-restaurants/config
+            - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${self:service}/${sls:stage}/search-restaurants/secretString
+        - Effect: Allow
+          Action: kms:Decrypt
+          Resource: ${ssm:/${sls:stage}/kmsArn}
 functions:
   get-index:
     handler: functions/get-index.handler

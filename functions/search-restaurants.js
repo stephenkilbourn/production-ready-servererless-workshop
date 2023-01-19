@@ -36,7 +36,7 @@ module.exports.handler = middy(
         body: JSON.stringify(restaurants)
       }
       const end = Date.now()
-
+      console.info(context.secretString)
       metrics.putMetric("latency", end - start, Unit.Milliseconds)
       metrics.setProperty("RequestId", context?.awsRequestId)
       metrics.setProperty("ApiGatewayRequestId", event.requestContext?.requestId)
@@ -45,6 +45,7 @@ module.exports.handler = middy(
   })).use(ssm({
     setToContext: true,
     fetchData: {
-      config: `/${serviceName}/${stage}/search-restaurants/config`
+      config: `/${serviceName}/${stage}/search-restaurants/config`,
+      secretString: `/${serviceName}/${stage}/search-restaurants/secretString`,
     }
   }))

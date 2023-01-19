@@ -26,7 +26,6 @@ module.exports.handler = middy(async (event, context) => {
   }
   return response
 }).use(ssm({
-
   setToContext: true,
   fetchData: {
     config: `/${serviceName}/${stage}/get-restaurants/config`
