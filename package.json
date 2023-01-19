@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@aws-sdk/client-ssm": "^3.252.0",
     "@types/jest": "^29.2.5",
     "aws-sdk": "^2.1292.0",
     "awscred": "^1.5.0",
@@ -26,6 +25,7 @@
     "serverless-export-env": "^2.2.0"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "^3.252.0",
     "@middy/core": "^4.0.10",
     "@middy/ssm": "^4.0.10",
     "aws4": "^1.12.0",
