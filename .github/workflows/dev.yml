@@ -33,11 +33,26 @@ jobs:
       - name: npm ci
         run: npm ci
 
-      - name: run integration test
-        run: npm run test
+      # this provisions a temporary stage called 'ci-dev'
+      - name: deploy temp environment
+        run: npx sls deploy -s ci-dev
 
+      # this generates the .env file for the 'ci-dev' stage
+      - name: export env
+        run: npx sls export-env --all -s ci-dev
+
+      # this runs the integration test against the 'ci-dev' stage
+      - name: run integration test
+        run: npx cross-env TEST_MODE=handler jest
+
+      # this runs the acceptance test against the 'ci-dev' stage
+      - name: run acceptance tests
+        run: npx cross-env TEST_MODE=http jest
+
+      # delete the 'ci-dev' stage
+      - name: destroy temp environment
+        run: npx sls remove -s ci-dev
+
+      # deploy to the ACTUAL dev stage
       - name: deploy to dev
         run: npx sls deploy
-
-      - name: run acceptance tests
-        run: npm run acceptance
