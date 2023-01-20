@@ -61,9 +61,10 @@ const viaHttp = async (relPath, method, opts) => {
     const res = await httpReq
     return respondFrom(res)
   } catch (err) {
-    if (err.status) {
+
+    if (err.response.status) {
       return {
-        statusCode: err.status,
+        statusCode: err.response.status,
         headers: err.response.headers
       }
     } else {
@@ -103,7 +104,7 @@ const we_invoke_search_restaurants = async (theme, user) => {
     case 'handler':
       return await viaHandler({ body }, 'search-restaurants')
     case 'http':
-      const auth = user.idToken
+      const auth = user ? user.idToken : null
       return await viaHttp('restaurants/search', 'POST', { body, auth })
     default:
       throw new Error(`unsupported mode: ${mode}`)

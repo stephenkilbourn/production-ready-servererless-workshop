@@ -27,6 +27,7 @@
   "dependencies": {
     "@aws-sdk/client-ssm": "^3.252.0",
     "@middy/core": "^4.1.0",
+    "@middy/error-logger": "^4.1.0",
     "@middy/ssm": "^4.1.0",
     "aws-embedded-metrics": "^4.0.0",
     "aws4": "^1.12.0",

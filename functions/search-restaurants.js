@@ -1,5 +1,6 @@
 const middy = require('@middy/core')
 const ssm = require('@middy/ssm')
+const errorLogger = require('@middy/error-logger')
 const { metricScope, Unit } = require('aws-embedded-metrics')
 const DocumentClient = require('aws-sdk/clients/dynamodb').DocumentClient
 
@@ -48,4 +49,4 @@ module.exports.handler = middy(
       config: `/${serviceName}/${stage}/search-restaurants/config`,
       secretString: `/${serviceName}/${stage}/search-restaurants/secretString`,
     }
-  }))
+  })).use(errorLogger())
