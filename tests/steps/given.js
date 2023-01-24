@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const chance  = require('chance').Chance()
-const  restaurants = require('../../restaurants')
+
 
 const tableName = process.env.restaurants_table
 const DocumentClient = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
@@ -82,25 +82,9 @@ const restaurant_added_to_dynamodb = async (restaurant) => {
   return restaurant
 }
 
-const restaurants_seeded_in_dynamodb = async() => {
 
-  const seedItems = restaurants.map(x => ({
-    PutRequest: {
-      Item: x
-    }
-  }))
-
-  DocumentClient.batchWrite({
-    RequestItems: {
-      [tableName]: seedItems
-    }
-  }).promise()
-  .then(() => console.log("all done"))
-  .catch(err => console.error(err))
-}
 
 module.exports = {
   an_authenticated_user,
   restaurant_added_to_dynamodb,
-  restaurants_seeded_in_dynamodb,
 }
