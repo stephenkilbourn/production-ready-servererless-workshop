@@ -25,6 +25,8 @@ provider:
         - - https://
           - !Ref ApiGatewayRestApi
           - .execute-api.${aws:region}.amazonaws.com/${sls:stage}
+  eventBridge:
+    useCloudFormation: true
 
   iam:
     role:
@@ -44,6 +46,13 @@ provider:
         - Effect: Allow
           Action: kms:Decrypt
           Resource: ${ssm:/${sls:stage}/kmsArn}
+        - Effect: Allow
+          Action: events:PutEvents
+          Resource: !GetAtt EventBus.Arn
+        - Effect: Allow
+          Action: sns:Publish
+          Resource: !Ref RestaurantNotificationTopic
+
 functions:
   get-index:
     handler: functions/get-index.handler
@@ -61,6 +70,12 @@ functions:
       cognito_user_pool_id: !Ref CognitoUserPool
       cognito_client_id: !Ref WebCognitoUserPoolClient
       cognito_server_client_id: !Ref ServerCognitoUserPoolClient
+      orders_api:
+        Fn::Join:
+          - ""
+          - - https://
+            - !Ref ApiGatewayRestApi
+            - .execute-api.${aws:region}.amazonaws.com/${sls:stage}/orders
   get-restaurants:
     handler: functions/get-restaurants.handler
     events:
@@ -88,6 +103,31 @@ functions:
             arn: !GetAtt CognitoUserPool.Arn
     environment:
       restaurants_table: !Ref RestaurantsTable
+  place-order:
+    handler: functions/place-order.handler
+    events:
+      - http:
+          path: /orders
+          method: post
+          authorizer:
+            name: CognitoAuthorizer
+            type: COGNITO_USER_POOLS
+            arn: !GetAtt CognitoUserPool.Arn
+    environment:
+      bus_name: !Ref EventBus
+  notify-restaurant:
+    handler: functions/notify-restaurant.handler
+    events:
+      - eventBridge:
+          eventBus: !Ref EventBus
+          pattern:
+            source:
+              - big-mouth
+            detail-type:
+              - order_placed
+    environment:
+      bus_name: !Ref EventBus
+      restaurant_notification_topic: !Ref RestaurantNotificationTopic
 
 resources:
   Resources:
@@ -124,7 +164,6 @@ resources:
           ## The certificate to use when viewers use HTTPS to request objects.
           ViewerCertificate:
             CloudFrontDefaultCertificate: true
-
     RestaurantsTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -199,6 +238,12 @@ resources:
             - - https://
               - !Ref ApiGatewayRestApi
               - .execute-api.${aws:region}.amazonaws.com/${sls:stage}
+    EventBus:
+      Type: AWS::Events::EventBus
+      Properties:
+        Name: order_events_${sls:stage}_${self:custom.name}
+    RestaurantNotificationTopic:
+      Type: AWS::SNS::Topic
 
   Outputs:
     RestaurantsTableName:
@@ -215,6 +260,15 @@ resources:
 
     CognitoUserPoolServerClientId:
       Value: !Ref ServerCognitoUserPoolClient
+
+    EventBusName:
+      Value: !Ref EventBus
+
+    RestaurantNotificationTopicName:
+      Value: !GetAtt RestaurantNotificationTopic.TopicName
+
+    RestaurantNotificationTopicArn:
+      Value: !Ref RestaurantNotificationTopic
 
     WebAppCloudFrontDistributionOutput:
       Value:

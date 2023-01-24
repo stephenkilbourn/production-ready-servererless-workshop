@@ -38,3 +38,12 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Add test for more than 8 items in DB
 - Add test for unauthenticated search
 - Add test for search item not found
+
+## Week 3 work
+
+- Add place-order function to publish order_placed to Event Bridge
+- add notify-restaurant function to publish a message to the RestaurantNotificationTopic SNS topic to notify the restaurant of a new order
+- add integration tests for each endpoint
+- update `viaHandler` to check _.get(response, 'body') before parsing because `notify-restaurant` function does not
+- skip mocked `mockPutEvents` test for acceptance tests
+- skip notify-restaurants test for acceptance test
