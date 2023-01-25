@@ -51,3 +51,4 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Check SNS messages in the acceptance tests
 - Add conditionally deployed EventBridge rule
 - Check EventBridge messages in the acceptance tests
+- Set each function with dedicated IAM Role limited to needed permission 
