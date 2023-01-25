@@ -58,5 +58,5 @@ const req = {
   }
 }
 dynamodb.batchWrite(req).promise()
-  .then(() => console.log("all done"))
+  .then(() => console.log("all done seeding"))
   .catch(err => console.error(err))
