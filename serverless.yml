@@ -137,9 +137,7 @@ functions:
 resources:
   Conditions:
     IsE2eTest:
-      Fn::Equals:
-        - ${sls:stage}
-        - dev
+      Fn::EndsWith: [ "${sls:stage}", dev ]
   Resources:
     WebAppCloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
@@ -354,3 +352,4 @@ plugins:
   - serverless-export-env
   - serverless-api-gateway-throttling
   - serverless-export-outputs
+  - serverless-plugin-extrinsic-functions
