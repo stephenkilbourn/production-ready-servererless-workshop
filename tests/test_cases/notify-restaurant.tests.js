@@ -1,60 +1,44 @@
 const { init } = require('../steps/init')
 const when = require('../steps/when')
-const AWS = require('aws-sdk')
 const chance = require('chance').Chance()
-
-const mockPutEvents = jest.fn()
-AWS.EventBridge.prototype.putEvents = mockPutEvents
-const mockPublish = jest.fn()
-AWS.SNS.prototype.publish = mockPublish
+const messages = require('../messages')
 
 describe(`When we invoke the notify-restaurant function`, () => {
-  if (process.env.TEST_MODE === 'handler') {
-    beforeAll(async () => {
-      await init()
-
-      mockPutEvents.mockClear()
-      mockPublish.mockClear()
-
-      mockPutEvents.mockReturnValue({
-        promise: async () => {}
-      })
-      mockPublish.mockReturnValue({
-        promise: async () => {}
-      })
-
-      const event = {
-        source: 'big-mouth',
-        'detail-type': 'order_placed',
-        detail: {
-          orderId: chance.guid(),
-          userEmail: chance.email(),
-          restaurantName: 'Fangtasia'
-        }
-      }
-      await when.we_invoke_notify_restaurant(event)
-    })
-
-    it(`Should publish message to SNS`, async () => {
-      expect(mockPublish).toBeCalledWith({
-        Message: expect.stringMatching(`"restaurantName":"Fangtasia"`),
-        TopicArn: expect.stringMatching(process.env.restaurant_notification_topic)
-      })
-    })
-
-    it(`Should publish event to EventBridge`, async () => {
-      expect(mockPutEvents).toBeCalledWith({
-        Entries: [
-          expect.objectContaining({
-            Source: 'big-mouth',
-            DetailType: 'restaurant_notified',
-            Detail: expect.stringContaining(`"restaurantName":"Fangtasia"`),
-            EventBusName: expect.stringMatching(process.env.bus_name)
-          })
-        ]
-      })
-    })
-  } else {
-    it('no acceptance test', () => {})
+  const event = {
+    source: 'big-mouth',
+    'detail-type': 'order_placed',
+    detail: {
+      orderId: chance.guid(),
+      restaurantName: 'Fangtasia'
+    }
   }
+
+  beforeAll(async () => {
+    await init()
+    messages.startListening()
+    await when.we_invoke_notify_restaurant(event)
+  })
+
+  afterAll(async () => {
+    messages.stopListening()
+  })
+
+  it(`Should publish message to SNS`, async () => {
+    await messages.waitForMessage(
+      'sns',
+      process.env.restaurant_notification_topic,
+      JSON.stringify(event.detail)
+    )
+  }, 10000)
+
+  it(`Should publish "restaurant_notified" event to EventBridge`, async () => {
+    await messages.waitForMessage(
+      'eventbridge',
+      process.env.bus_name,
+      JSON.stringify({
+        ...event,
+        'detail-type': 'restaurant_notified'
+      })
+    )
+  }, 10000)
 })

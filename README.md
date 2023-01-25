@@ -45,5 +45,9 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - add notify-restaurant function to publish a message to the RestaurantNotificationTopic SNS topic to notify the restaurant of a new order
 - add integration tests for each endpoint
 - update `viaHandler` to check _.get(response, 'body') before parsing because `notify-restaurant` function does not
-- skip mocked `mockPutEvents` test for acceptance tests
-- skip notify-restaurants test for acceptance test
+- Add conditionally deployed SQS queue for acceptance tests deployed when ${sls:stage} equals "dev"
+- Subscribe Conditional SQS queue to SNS the RestaurantNotificationTopic
+- use serverless-export-outputs plugin to capture E2eTestQueueUrl and CognitoUserPoolServerClientId to `.env-outputs`
+- Check SNS messages in the acceptance tests
+- Add conditionally deployed EventBridge rule
+- Check EventBridge messages in the acceptance tests
