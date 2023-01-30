@@ -1,8 +1,8 @@
-const middy = require('@middy/core')
 const ssm = require('@middy/ssm')
 const errorLogger = require('@middy/error-logger')
 const { metricScope, Unit } = require('aws-embedded-metrics')
 const DocumentClient = require('aws-sdk/clients/dynamodb').DocumentClient
+const wrap = require('@dazn/lambda-powertools-pattern-basic')
 
 const dynamodb = new DocumentClient()
 
@@ -23,7 +23,7 @@ const findRestaurantsByTheme = async (theme, count) => {
   return resp.Items
 }
 
-module.exports.handler = middy(
+module.exports.handler = wrap(
   metricScope(metrics =>
     async (event, context) => {
       metrics.setNamespace('prod-serverless-workshop')

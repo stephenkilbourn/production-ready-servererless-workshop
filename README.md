@@ -57,3 +57,4 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 
 - Replace console.log with structured JSON logging
 - Set log level to `INFO` on prod and `DEBUG` other stages
+- Sample 10% of debug logs in production
