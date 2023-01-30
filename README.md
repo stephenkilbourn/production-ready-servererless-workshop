@@ -58,3 +58,8 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Replace console.log with structured JSON logging
 - Set log level to `INFO` on prod and `DEBUG` other stages
 - Sample 10% of debug logs in production
+- Add AWS XRay distributed tracing
+- Instrument AWS SDK to track call duration to DynamoDB and SNS in traces
+- Speed up calls to DynamoDB by reusing https connections
+- instrument built-in https module with the X-Ray SDK to see get-index function and the corresponding trace for the get-restaurants function in one screen
+- Set  `AWS_XRAY_CONTEXT_MISSING` environment variable to `IGNORE_ERROR` for tests

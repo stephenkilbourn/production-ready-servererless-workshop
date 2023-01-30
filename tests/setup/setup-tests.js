@@ -1,7 +1,10 @@
-const AWS = require('aws-sdk');
-require('dotenv').config()
+const dotenv = require('dotenv')
 
-const  restaurants = require('../restaurants')
+dotenv.config({ path: './.test.env' })
+
+const AWS = require('aws-sdk');
+
+const  restaurants = require('../../restaurants')
 const tableName = process.env.restaurants_table
 const DocumentClient = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
 

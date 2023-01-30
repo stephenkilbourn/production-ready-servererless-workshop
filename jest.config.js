@@ -1,5 +1,5 @@
 module.exports = {  
   testEnvironment: 'node',
   testMatch: ['**/test_cases/**/*'],
-  globalSetup: "./tests/globalSetup.js"
+  setupFiles: ["./tests/setup/setup-tests.js"],
 }
