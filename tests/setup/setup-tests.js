@@ -1,5 +1,5 @@
 const dotenv = require('dotenv')
-
+dotenv.config({ path: '.env' })
 dotenv.config({ path: './.test.env' })
 
 const AWS = require('aws-sdk');
