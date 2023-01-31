@@ -84,6 +84,7 @@ functions:
       Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}/${sls:stage}/GET/restaurants
   get-restaurants:
     handler: functions/get-restaurants.handler
+    memorySize: 512
     events:
       - http:
           path: /restaurants

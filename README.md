@@ -66,6 +66,7 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Caputre and pass Correlation IDs between lambda functons
 - Capture custom Correlation IDs of `userId`, `orderId`, and `restaurantName` in place-order and pass to subsequent functions
 - Add tracing with Lumigo (recommended third party tool)
+- Optimized get-restaurants lambda based on `aws-lambda-power-tuning` [results](https://lambda-power-tuning.show/#gAAAAQACAAQACMAL;gOOdQyot50OhjIpCmIfoQultD0KqcaxC;PyIyNfl/AjYN1x01wOgDNopZojV0EJA2)
 
 ### Week 4 Optional extra work
 
