@@ -63,3 +63,10 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Speed up calls to DynamoDB by reusing https connections
 - instrument built-in https module with the X-Ray SDK to see get-index function and the corresponding trace for the get-restaurants function in one screen
 - Set  `AWS_XRAY_CONTEXT_MISSING` environment variable to `IGNORE_ERROR` for tests
+- Caputre and pass Correlation IDs between lambda functons
+- Capture custom Correlation IDs of `userId`, `orderId`, and `restaurantName` in place-order and pass to subsequent functions
+
+### Week 4 Optional extra work
+
+- Update tests to handle necessary additional eventContext information from Correlation IDs and logging
+- Fix timeout hanging of tests which use `require('@dazn/lambda-powertools-eventbridge-client')`

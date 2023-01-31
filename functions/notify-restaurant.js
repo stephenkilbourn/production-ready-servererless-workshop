@@ -1,6 +1,11 @@
-const EventBridge = require('aws-sdk/clients/eventbridge')
+const Log = require('@dazn/lambda-powertools-logger')
 const XRay = require('aws-xray-sdk-core')
-const eventBridge = XRay.captureAWSClient(new EventBridge())
+const EventBridge = require('aws-sdk/clients/eventbridge')
+
+const testEventBridge = XRay.captureAWSClient(new EventBridge())
+const eventBridge = XRay.captureAWSClient(require('@dazn/lambda-powertools-eventbridge-client'))
+const activeEventBridge = process.env.stage === "dev" || process.env.stage === "ci-dev" ? testEventBridge : eventBridge
+
 const SNS = require('aws-sdk/clients/sns')
 const sns = XRay.captureAWSClient(new SNS())
 const wrap = require('@dazn/lambda-powertools-pattern-basic')
@@ -16,10 +21,9 @@ module.exports.handler = wrap(async (event, context) => {
   };
   await sns.publish(snsReq).promise()
 
-  const { restaurantName, orderId } = order
-  console.log(`notified restaurant [${restaurantName}] of order [${orderId}]`)
+  Log.debug('notified restaurant')
 
-  await eventBridge.putEvents({
+  await activeEventBridge.putEvents({
     Entries: [{
       Source: 'big-mouth',
       DetailType: 'restaurant_notified',

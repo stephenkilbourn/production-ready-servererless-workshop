@@ -2,6 +2,8 @@ const aws4 = require('aws4')
 const URL = require('url')
 const http = require('axios')
 const EventBridge = require('aws-sdk/clients/eventbridge')
+const chance = require('chance').Chance()
+
 
 
 const mode = process.env.TEST_MODE
@@ -24,7 +26,7 @@ const viaEventBridge = async (busName, source, detailType, detail) => {
 const viaHandler = async (event, functionName) => {
   const handler = require(`${APP_ROOT}/functions/${functionName}`).handler
 
-  const context = {}
+  const context = { awsRequestId: 'test' }
   const response = await handler(event, context)
   const contentType = _.get(response, 'headers.content-type', 'application/json');
   if (_.get(response, 'body') && contentType === 'application/json') {
@@ -87,11 +89,25 @@ const viaHttp = async (relPath, method, opts) => {
   }
 }
 
+const generateEvent = eventContents => {
+  const event = {
+    requestContext: {
+      requestId: 'test-id-' + chance.guid(), // Required by EMF metric functions calls used
+      authorizer: {
+        claims: {
+          sub: "test-sub" // Required by X-Ray CorrelationIds set calls used
+        }
+      }
+    }
+  }
+  return { ...event, ...eventContents }
+}
+
 const we_invoke_get_index = async () => {
 
   switch (mode) {
     case 'handler':
-      return await viaHandler({}, 'get-index')
+      return await viaHandler(generateEvent(), 'get-index')
     case 'http':
       return viaHttp('', 'GET')
     default:
@@ -103,7 +119,7 @@ const we_invoke_get_index = async () => {
 const we_invoke_get_restaurants = async () => {
   switch (mode) {
     case 'handler':
-      return await viaHandler({}, 'get-restaurants')
+      return await viaHandler(generateEvent(), 'get-restaurants')
     case 'http':
       return await viaHttp('restaurants', 'GET', { iam_auth: true })
     default:
@@ -113,10 +129,13 @@ const we_invoke_get_restaurants = async () => {
 
 const we_invoke_search_restaurants = async (theme, user) => {
   const body = JSON.stringify({ theme })
+  let event = generateEvent({
+    body: body,
+  })
 
   switch (mode) {
     case 'handler':
-      return await viaHandler({ body }, 'search-restaurants')
+      return await viaHandler(event, 'search-restaurants')
     case 'http':
       const auth = user ? user.idToken : null
       return await viaHttp('restaurants/search', 'POST', { body, auth })
@@ -130,7 +149,7 @@ const we_invoke_place_order = async (user, restaurantName) => {
 
   switch (mode) {
     case 'handler':
-      return await viaHandler({ body }, 'place-order')
+      return await viaHandler(generateEvent({ body }), 'place-order')
     case 'http':
       const auth = user.idToken
       return await viaHttp('orders', 'POST', { body, auth })
@@ -141,7 +160,7 @@ const we_invoke_place_order = async (user, restaurantName) => {
 
 const we_invoke_notify_restaurant = async (event) => {
   if (mode === 'handler') {
-    await viaHandler(event, 'notify-restaurant')
+    await viaHandler(generateEvent(event), 'notify-restaurant')
   } else {
     const busName = process.env.bus_name
     await viaEventBridge(busName, event.source, event['detail-type'], event.detail)
