@@ -65,6 +65,7 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Set  `AWS_XRAY_CONTEXT_MISSING` environment variable to `IGNORE_ERROR` for tests
 - Caputre and pass Correlation IDs between lambda functons
 - Capture custom Correlation IDs of `userId`, `orderId`, and `restaurantName` in place-order and pass to subsequent functions
+- Add tracing with Lumigo (recommended third party tool)
 
 ### Week 4 Optional extra work
 

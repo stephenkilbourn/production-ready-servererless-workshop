@@ -20,6 +20,9 @@ custom:
     default: DEBUG
   serverless-iam-roles-per-function:
     defaultInherit: true
+  lumigo:
+    token: t_b675d8f003914fbda85fd
+    nodePackageManager: npm
 
 provider:
   name: aws
@@ -382,3 +385,4 @@ plugins:
   - serverless-export-outputs
   - serverless-plugin-extrinsic-functions
   - serverless-iam-roles-per-function
+  - serverless-lumigo
