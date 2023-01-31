@@ -68,7 +68,12 @@ work done as part of Yan Cui's [Production Ready Serverless Workshop](https://pr
 - Add tracing with Lumigo (recommended third party tool)
 - Optimized get-restaurants lambda based on `aws-lambda-power-tuning` [results](https://lambda-power-tuning.show/#gAAAAQACAAQACMAL;gOOdQyot50OhjIpCmIfoQultD0KqcaxC;PyIyNfl/AjYN1x01wOgDNopZojV0EJA2)
 
+<img width=75% height=75% alt="AWS Generated Trace" src="https://user-images.githubusercontent.com/7388976/215906074-c22bce4f-8267-4b2c-a389-acb967f1dea9.png">
+<img width=75% height=75% alt="Lumigo Generated System Map" src="https://user-images.githubusercontent.com/7388976/215906134-cb668938-6a24-4bc4-89f0-9dc02cc68fa8.png">
+
+
 ### Week 4 Optional extra work
+
 
 - Update tests to handle necessary additional eventContext information from Correlation IDs and logging
 - Fix timeout hanging of tests which use `require('@dazn/lambda-powertools-eventbridge-client')`
